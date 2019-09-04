@@ -10,6 +10,38 @@ module Api
         article = Article.find(params[:id])
         render json: {status:'SUCCESS', message:'Loaded Article', data:article}, status: :ok
       end
+
+      def create
+        article = Article.new(article_params)
+
+        if article.save
+          render json: {status:'SUCCESS', message:'Saved Article', data:article}, status: :ok
+        else
+          render json: {status:'ERROR', message:'Article NOT Saved', data:article.errors}, status: :unprocessable_entity
+        end
+      end
+
+      def destroy
+        article = Article.find(params[:id])
+        article.destroy
+        render json: {status:'SUCCESS', message:'Article deleted', data:article}, status: :ok
+      end
+
+      def update 
+        article = Article.find(params[:id])
+
+        if article.update_attributes(article_params)
+          render json: {status:'SUCCESS', message:'Article Updated', data:article}, status: :ok
+        else
+          render json: {status:'ERROR', message:'Article NOT Updated', data:article.errors}, status: :unprocessable_entity
+        end
+      end
+
+      private
+
+      def article_params
+        params.permit(:title, :body)
+      end
     end    
   end
 end
